@@ -5,6 +5,14 @@ import 'package:flutter_gherkin/src/flutter/hooks/app_runner_hook.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:gherkin/gherkin.dart';
 
+enum FlutterAction {
+  run('run'),
+  attach('attach');
+
+  const FlutterAction(this.value);
+  final String value;
+}
+
 class FlutterDriverTestConfiguration extends FlutterTestConfiguration {
   String? _observatoryDebuggerUri;
 
@@ -40,6 +48,7 @@ class FlutterDriverTestConfiguration extends FlutterTestConfiguration {
     this.flutterBuildTimeout = const Duration(seconds: 90),
     this.flutterDriverReconnectionDelay = const Duration(seconds: 2),
     this.flutterDriverMaxConnectionAttempts = 3,
+    this.action = FlutterAction.run,
   }) :
         // assert(featurePath != null && features != null),
         super(
@@ -139,6 +148,10 @@ class FlutterDriverTestConfiguration extends FlutterTestConfiguration {
   /// Called before any attempt to connect Flutter driver to the running application,  Depending on your configuration this
   /// method will be called before each scenario is run.
   final Future<void> Function()? onBeforeFlutterDriverConnect;
+
+  //option for run new app or attach to an existing app
+  //default is run
+  final FlutterAction action;
 
   /// Called after the successful connection of Flutter driver to the running application.  Depending on your configuration this
   /// method will be called on each new connection usually before each scenario is run.

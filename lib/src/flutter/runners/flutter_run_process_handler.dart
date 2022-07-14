@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_gherkin/flutter_gherkin_with_driver.dart';
 import 'package:flutter_gherkin/src/flutter/configuration/build_mode.dart';
 import 'package:gherkin/gherkin.dart';
 
@@ -52,6 +53,7 @@ class FlutterRunProcessHandler extends ProcessHandler {
   String? _deviceTargetId;
   Duration _driverConnectionDelay = const Duration(seconds: 2);
   String? currentObservatoryUri;
+  FlutterAction _action = FlutterAction.run;
 
   void setLogFlutterProcessOutput(bool logFlutterProcessOutput) {
     _logFlutterProcessOutput = logFlutterProcessOutput;
@@ -93,9 +95,13 @@ class FlutterRunProcessHandler extends ProcessHandler {
     _keepAppRunning = keepRunning;
   }
 
+  void setAction(FlutterAction action) {
+    _action = action;
+  }
+
   @override
   Future<void> run() async {
-    final arguments = ['run', '--target=$_appTarget'];
+    final arguments = [_action.value, '--target=$_appTarget'];
 
     if (_buildMode == BuildMode.debug) {
       arguments.add('--debug');
